@@ -54,7 +54,11 @@
         void main()
         {  
             float noise =  voronoi(gl_FragCoord.xy / 1000., vec2(20.));
-            fragColor = vec4(vec3(noise), 1);
+            if(noise > 0.5){
+                fragColor = vec4(vec3(1), 1);
+            }else{
+                fragColor = vec4(vec3(0), 1);
+            }
         }
     </script>
     <script type="importmap">
