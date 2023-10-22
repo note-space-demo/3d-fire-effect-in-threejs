@@ -28,6 +28,8 @@
     <script type="x-shader/x-fragment" id="fragment-shader">
         precision mediump float;
 
+        #define PI 3.14
+
         in vec3 vPosition;
 
         out vec4 fragColor;
@@ -58,9 +60,10 @@
 
         void main()
         {  
-            float noise =  voronoi(gl_FragCoord.xy / 1000., vec2(20.));
-            float smallNoise =  voronoi((gl_FragCoord.xy + 100.) / 1000., vec2(30.));
-            float bigNoise =  voronoi((gl_FragCoord.xy + 200.) / 1000., vec2(10.));
+            vec2 coord = vec2(atan(vPosition.z, vPosition.x) / (2. * PI), vPosition.y * 0.5 + 0.5);
+            float noise =  voronoi(coord, vec2(20.));
+            float smallNoise =  voronoi(mod(coord + 0.2, 1.), vec2(30.));
+            float bigNoise =  voronoi(mod(coord + 0.4, 1.), vec2(10.));
             float verticalGradient = -1. * vPosition.y * 0.5 + 0.5;
             if((noise + smallNoise + bigNoise + verticalGradient) / 4. > 0.5){
                 fragColor = vec4(vec3(1), 1);
