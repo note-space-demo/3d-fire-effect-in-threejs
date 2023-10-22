@@ -54,7 +54,9 @@
         void main()
         {  
             float noise =  voronoi(gl_FragCoord.xy / 1000., vec2(20.));
-            if(noise > 0.5){
+            float smallNoise =  voronoi((gl_FragCoord.xy + 100.) / 1000., vec2(30.));
+            float bigNoise =  voronoi((gl_FragCoord.xy + 200.) / 1000., vec2(10.));
+            if((noise + smallNoise + bigNoise) / 3. > 0.5){
                 fragColor = vec4(vec3(1), 1);
             }else{
                 fragColor = vec4(vec3(0), 1);
