@@ -30,6 +30,8 @@
 
         #define PI 3.14
 
+        uniform float uAnimationProgress;
+
         in vec3 vPosition;
 
         out vec4 fragColor;
@@ -61,9 +63,10 @@
         void main()
         {  
             vec2 coord = vec2(atan(vPosition.z, vPosition.x) / (2. * PI), vPosition.y * 0.5 + 0.5);
-            float noise =  voronoi(coord, vec2(20.));
-            float smallNoise =  voronoi(mod(coord + 0.2, 1.), vec2(30.));
-            float bigNoise =  voronoi(mod(coord + 0.4, 1.), vec2(10.));
+            vec2 animateOffset = vec2(0., -uAnimationProgress);
+            float noise =  voronoi(mod(coord + animateOffset, 1.), vec2(20.));
+            float smallNoise =  voronoi(mod(coord + 0.2 + animateOffset, 1.), vec2(30.));
+            float bigNoise =  voronoi(mod(coord + 0.4 + animateOffset, 1.), vec2(10.));
             float verticalGradient = -1. * vPosition.y * 0.5 + 0.5;
             if((noise + smallNoise + bigNoise + verticalGradient) / 4. > 0.5){
                 fragColor = vec4(vec3(1), 1);
@@ -103,6 +106,7 @@
             fragmentShader: fragShader,
             vertexShader: vertexShader,
             glslVersion: THREE.GLSL3,
+            uniforms: { uAnimationProgress: { value: (Date.now() / 2000) % 1 } },
         })
 
         const loader = new GLTFLoader()
@@ -117,6 +121,7 @@
 
 
         function render() {
+            material.uniforms.uAnimationProgress.value = (Date.now() / 2000) % 1
             controls.update()
             renderer.render(scene, camera)
             window.requestAnimationFrame(render)
