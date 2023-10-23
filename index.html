@@ -72,7 +72,7 @@
             if((noise + smallNoise + bigNoise + verticalGradient) / 4. > 0.5){
                 fragColor = vec4(vec3(uColor), 1);
             }else{
-                fragColor = vec4(vec3(0), 1);
+                fragColor = vec4(0);
             }
         }
     </script>
@@ -97,6 +97,7 @@
         const renderer = new THREE.WebGLRenderer()
         renderer.setSize(width, height)
         renderer.pixelRatio = window.devicePixelRatio ?? renderer.pixelRatio
+        renderer.autoClear = false
         const controls = new OrbitControls(camera, renderer.domElement)
 
         document.body.appendChild(renderer.domElement)
@@ -111,6 +112,7 @@
                 uAnimationProgress: { value: (Date.now() / 2000) % 1 },
                 uColor: { value: [1, 0, 0] }
             },
+            transparent: true,
         })
 
         const loader = new GLTFLoader()
@@ -127,6 +129,9 @@
         function render() {
             material.uniforms.uAnimationProgress.value = (Date.now() / 2000) % 1
             controls.update()
+            material.side = THREE.BackSide
+            renderer.render(scene, camera)
+            material.side = THREE.FrontSide
             renderer.render(scene, camera)
             window.requestAnimationFrame(render)
         }
