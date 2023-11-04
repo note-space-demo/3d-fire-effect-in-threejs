@@ -201,23 +201,29 @@
 
             scene.add(mesh1)
             scene.add(mesh2)
+            function render() {
+                material1.uniforms.uAnimationProgress.value = (Date.now() / 2000) % 1
+                material2.uniforms.uAnimationProgress.value = (Date.now() / 2000 + 0.2) % 1
+                controls.update()
+
+                material1.side = THREE.BackSide
+                material2.side = THREE.BackSide
+                mesh1.renderOrder = 0;
+                mesh2.renderOrder = 1;
+                renderer.render(scene, camera)
+
+                material2.side = THREE.FrontSide
+                material1.side = THREE.FrontSide
+                mesh1.renderOrder = 1;
+                mesh2.renderOrder = 0;
+                renderer.render(scene, camera)
+                window.requestAnimationFrame(render)
+            }
+
+            render()
         }, undefined, console.error)
 
 
-        function render() {
-            material1.uniforms.uAnimationProgress.value = (Date.now() / 2000) % 1
-            material2.uniforms.uAnimationProgress.value = (Date.now() / 2000 + 0.2) % 1
-            controls.update()
-            material1.side = THREE.BackSide
-            material2.side = THREE.BackSide
-            renderer.render(scene, camera)
-            material2.side = THREE.FrontSide
-            material1.side = THREE.FrontSide
-            renderer.render(scene, camera)
-            window.requestAnimationFrame(render)
-        }
-
-        render()
     </script>
 </body>
 
